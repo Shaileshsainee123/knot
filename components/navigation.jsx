@@ -75,7 +75,7 @@ export default function Navigation() {
                 Guest List
               </Button>
               <Button className="bg-[#C5A572] text-black hover:bg-[#C5A572]/80" onClick={() => handleScroll("booking")} >Book Table</Button>
-              <CircleUserRound className="text-primary cursor-pointer hover:scale-110 transition duration-300" size={40} onClick={() => setOpenLogin(true)} />
+              {/* <CircleUserRound className="text-primary cursor-pointer hover:scale-110 transition duration-300" size={40} onClick={() => setOpenLogin(true)} /> */}
 
             </div>
 
@@ -117,13 +117,13 @@ export default function Navigation() {
 
 
               </div>
-              <div className="flex bg-secondary items-center justify-center gap-3  mt-20 px-6 py-4">
+              {/* <div className="flex bg-secondary items-center justify-center gap-3  mt-20 px-6 py-4">
                 <CircleUserRound className="text-primary" size={45} />
                 <p className="text-black" onClick={() => {
                   toggleMobileMenu()
                   setOpenLogin(true)
                 }}>Login/Sign-up</p>
-              </div>
+              </div> */}
             </div>
           )}
         </div>

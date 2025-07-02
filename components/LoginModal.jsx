@@ -48,16 +48,14 @@ export default function LoginModal({ isOpen, onClose }) {
     },
     validationSchema: isLogin ? loginValidationSchema : signupValidationSchema,
     onSubmit: (values) => {
-      console.log("values", values)
+    
       // your logic...
       setTimeout(() => {
         setIsLoading(false)
 
         if (values.email && values.password) {
-          console.log("Login successful", values)
           // Check if admin email
           const isAdmin = values.email.includes("admin")
-          console.log("Admin", isAdmin)
           onClose()
           // Redirect based on role
           if (isAdmin) {

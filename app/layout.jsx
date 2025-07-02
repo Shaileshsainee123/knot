@@ -19,12 +19,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-    className={`${montserrat.className} overflow-x-hidden`}
+        className={`${montserrat.className} overflow-x-hidden`}
       >
         <AuthProvider>
-        <Navigation />
-        {children}
-        <Footer />
+          <Navigation />
+          {children}
+          <Footer />
         </AuthProvider>
       </body>
     </html>
