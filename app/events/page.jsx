@@ -1,9 +1,11 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import EventCard from "../../components/resuable_components/eventCard"
 import { motion } from "framer-motion"
 import Heading from "../../components/resuable_components/Heading"
+import { getEventList } from '@/lib/api/eventApi'
+import EventCardPlaceholder from '@/components/resuable_components/placeholders/EventCardPlaceholder'
 
 const MotionDiv = motion.div;
 
@@ -47,6 +49,12 @@ const events = [
 ];
 
 const EventsPage = () => {
+  const HeadingData = {
+    title: "Upcoming Events",
+    para: "Join us for our exclusive events featuring world-class DJs, themed nights, and unforgettable experiences.",
+  };
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const eventsPerPage = 3;
 
@@ -54,10 +62,27 @@ const EventsPage = () => {
   const startIndex = (currentPage - 1) * eventsPerPage;
   const paginatedEvents = events.slice(startIndex, startIndex + eventsPerPage);
 
-  const HeadingData = {
-    title: "Upcoming Events",
-    para: "Join us for our exclusive events featuring world-class DJs, themed nights, and unforgettable experiences.",
+  const getEvents = async () => {
+    setLoading(true);
+    try {
+      const response = await getEventList();
+
+      if (response.data?.result) {
+        setEvents(response.data.result);
+      } else {
+        console.error("Unexpected response format:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching event list:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+  useEffect(() => {
+    getEvents();
+  }, []);
+
+
 
   return (
     <div className='py-20'>
@@ -65,7 +90,8 @@ const EventsPage = () => {
         <div className="container mx-auto px-4">
           <Heading data={HeadingData} />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+         {loading
+            ? Array(3).fill(0).map((_, idx) => <EventCardPlaceholder key={idx} />) : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {paginatedEvents.map((event, index) => (
               <MotionDiv
                 key={event.id}
@@ -77,7 +103,7 @@ const EventsPage = () => {
                 <EventCard event={event} />
               </MotionDiv>
             ))}
-          </div>
+          </div>}
 
           <div className="flex justify-center items-center gap-4 mt-12">
             <Button

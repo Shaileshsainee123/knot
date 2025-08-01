@@ -9,14 +9,6 @@ import StatsPlaceholder from "./resuable_components/placeholders/StatsPlaceholde
 
 
 const MotionDiv = motion.create('div')
-
-const stats = [
-  { number: "5+", label: "Years of Excellence" },
-  { number: "200+", label: "Events Hosted" },
-  { number: "50+", label: "International DJs" },
-  { number: "100K+", label: "Happy Customers" },
-]
-
 export default function AboutSection() {
   const [aboutData, setAboutData] = useState({})
   const [loading, setLoading] = useState(false)
@@ -27,7 +19,6 @@ export default function AboutSection() {
     setLoading(true);
     try {
       const response = await apiJson.get("api/Website/getAboutUs");
-      console.log("About Data:", response.data);
 
       if (response?.data?.status === 1) {
         setAboutData(response?.data?.result); // assuming data is under `data`

@@ -17,7 +17,10 @@ const eventCard = ({ event }) => {
                     className="w-full h-64 object-cover"
                 />
                 <div className="absolute top-4 right-4 bg-primary text-black font-semibold px-3 py-1 rounded">
-                    {event.date}
+                    {new Date(event.date).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                    })}
                 </div>
             </div>
             <div className="p-6">
@@ -28,11 +31,11 @@ const eventCard = ({ event }) => {
                     <span className="text-secondary">{`${event?.startTime} - ${event?.endTime}`}</span>
                 </div>
                 <Link href={'#booking'}>
-                <Button
-                    className={"w-full bg-transparent border border-primary text-primary hover:bg-[#C5A572] hover:text-black transition-all duration-500"}
-                >
-                    Book Now
-                </Button>
+                    <Button
+                        className={"w-full bg-transparent border border-primary text-primary hover:bg-[#C5A572] hover:text-black transition-all duration-500"}
+                    >
+                        Book Now
+                    </Button>
                 </Link>
             </div>
         </div>

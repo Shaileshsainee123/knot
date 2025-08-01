@@ -5,8 +5,8 @@ import { motion } from "framer-motion"
 import Heading from "./resuable_components/Heading";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { apiJson } from "@/lib/api/axiosBase";
 import EventCardPlaceholder from "./resuable_components/placeholders/EventCardPlaceholder";
+import { getEventList } from "@/lib/api/eventApi";
 
 const MotionDiv = motion.create('div')
 const events = [
@@ -52,10 +52,10 @@ export default function EventsSection() {
 
   //=========== function to get the events ==================//
 
-  const getEventList = async () => {
+  const getEvents = async () => {
     setLoading(true);
     try {
-      const response = await apiJson.get("api/Website/getAllEventList");
+      const response = await getEventList();
 
       if (response.data?.result) {
         setEvents(response.data.result);
@@ -69,7 +69,7 @@ export default function EventsSection() {
     }
   };
   useEffect(() => {
-    getEventList();
+    getEvents();
   }, []);
 
   return (

@@ -11,6 +11,19 @@ export const metadata = {
     template: "%s | Knot-Delhi",
   },
   description: 'In the Knot, the night never unravels. We are watching, waiting, and welcoming you into a world of endless beats and unforgettable moments',
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon", rel: "icon" },          
+      { url: "/favicon-32x32.png", sizes: "192x192", type: "image/png", rel: "icon" },
+      { url: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png", rel: "icon" },
+    ],
+    shortcut: "/favicon.ico",           
+    apple: "/favicon-32x32.png",       
+    other: [
+      { rel: "apple-touch-icon", url: "/android-chrome-192x192.png" },
+      { rel: "mask-icon", url: "/android-chrome-512x512.png", color: "#000000" },
+    ],
+  },
 }
 
 const montserrat = Montserrat({
