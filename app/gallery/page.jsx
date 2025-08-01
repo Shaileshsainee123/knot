@@ -1,66 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Download, ZoomIn } from "lucide-react"
 import Heading from "@/components/resuable_components/Heading"
+import { getGalleryList } from "@/lib/api/eventApi"
 
-const galleryImages = [
-    {
-        id: 1,
-        src: "https://readdy.ai/api/search-image?query=luxurious%20nightclub%20interior%20with%20dark%20atmosphere%2C%20gold%20accents%2C%20elegant%20lighting%2C%20dance%20floor%2C%20VIP%20section%2C%20premium%20bottles%2C%20atmospheric%20lighting%2C%20professional%20photography%2C%20high-end%20nightlife&width=1920&height=1080&seq=hero1&orientation=landscape",
-        title: "Electric Night",
-        category: "Events",
-    },
-    {
-        id: 2,
-        src: "/placeholder.svg?height=600&width=800",
-        title: "DJ Performance",
-        category: "Atmosphere",
-    },
-    {
-        id: 3,
-        src: "/placeholder.svg?height=600&width=800",
-        title: "Neon Vibes",
-        category: "Atmosphere",
-    },
-    {
-        id: 4,
-        src: "/placeholder.svg?height=600&width=800",
-        title: "Dance Floor",
-        category: "Events",
-    },
-    {
-        id: 5,
-        src: "/placeholder.svg?height=600&width=800",
-        title: "VIP Lounge",
-        category: "Interior",
-    },
-    {
-        id: 6,
-        src: "/placeholder.svg?height=600&width=800",
-        title: "Light Show",
-        category: "Atmosphere",
-    },
-    {
-        id: 7,
-        src: "/placeholder.svg?height=600&width=800",
-        title: "Crowd Energy",
-        category: "Events",
-    },
-    {
-        id: 8,
-        src: "/placeholder.svg?height=600&width=800",
-        title: "Bar Scene",
-        category: "Interior",
-    },
-    {
-        id: 9,
-        src: "/placeholder.svg?height=600&width=800",
-        title: "Laser Lights",
-        category: "Atmosphere",
-    },
-]
 
 const categories = ["All", "Events", "Atmosphere", "Interior"]
 
@@ -68,14 +13,39 @@ export default function GalleryPage() {
     const [selectedCategory, setSelectedCategory] = useState("All")
     const [selectedImage, setSelectedImage] = useState(null)
 
-    const filteredImages =
-        selectedCategory === "All" ? galleryImages : galleryImages.filter((img) => img.category === selectedCategory)
-
     const headingData = {
         title: "Gallery",
         para: "Immerse yourself in the electric atmosphere of Neon Nights through our stunning visual collection",
     }
 
+      const [galleryItems, setGalleryItems] = useState([]);
+      const [loading, setLoading] = useState(false);
+    
+      //=========== function to get the events ==================//
+    
+      const getGalleryItems = async () => {
+        setLoading(true);
+        try {
+          const response = await getGalleryList();
+    
+          if (response.data?.result) {
+            setGalleryItems(response.data.result);
+          } else {
+            console.error("Unexpected response format:", response.data);
+          }
+        } catch (error) {
+          console.error("Error fetching event list:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      useEffect(() => {
+        getGalleryItems();
+      }, []);
+
+
+       const filteredImages =
+        selectedCategory === "All" ? galleryItems : galleryItems.filter((img) => img.category === selectedCategory)
     return (
         <div className="min-h-screen bg-gradient-dark pt-20">
             {/* Header */}
@@ -126,7 +96,7 @@ export default function GalleryPage() {
                                 {/* Image */}
                                 <div className="relative overflow-hidden">
                                     <motion.img
-                                        src={image.src}
+                                        src={image.gallery_Image}
                                         alt={image.title}
                                         className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
                                         whileHover={{ scale: 1.1 }}
@@ -162,7 +132,7 @@ export default function GalleryPage() {
                                             <h3 className="text-lg font-semibold text-white group-hover:text-primary transition-colors">
                                                 {image.title}
                                             </h3>
-                                            <p className="text-sm text-muted">{image.category}</p>
+                                            <p className="text-sm text-muted">{image?.categoryName}</p>
                                         </div>
 
                                     </div>
@@ -180,7 +150,7 @@ export default function GalleryPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 flex items-center  justify-center p-4 bg-black/90 backdrop-blur-sm"
                         onClick={() => setSelectedImage(null)}
                     >
                         <motion.div
@@ -203,7 +173,7 @@ export default function GalleryPage() {
 
                             {/* Image */}
                             <img
-                                src={selectedImage.src || "/placeholder.svg"}
+                                src={selectedImage?.gallery_Image || "/placeholder.svg"}
                                 alt={selectedImage.title}
                                 className="w-full h-full object-contain rounded-lg"
                             />
@@ -217,7 +187,7 @@ export default function GalleryPage() {
                             >
                                 <h3 className="text-2xl font-bold text-white mb-2">{selectedImage.title}</h3>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-purple-400 font-semibold">{selectedImage.category}</span>
+                                    <span className="text-purple-400 font-semibold">{selectedImage.categoryName}</span>
                                     <div className="flex items-center gap-4">
                                         <motion.button
                                             whileHover={{ scale: 1.05 }}
