@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import Link from "next/link"
 
 const MotionButton = motion.create(Button);
 const MotionDiv = motion.create('div')
@@ -59,6 +60,7 @@ export default function HeroSection() {
             heart of the city.
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+            <Link href="#booking">
             <MotionButton
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -66,6 +68,8 @@ export default function HeroSection() {
               className="bg-primary text-black hover:bg-[#C5A572]/80 px-8 py-3 text-lg font-semibold">
               Book Now
             </MotionButton>
+            </Link>
+            <Link href="/events">
             <MotionButton
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -74,6 +78,7 @@ export default function HeroSection() {
             >
               View Events
             </MotionButton>
+            </Link>
           </div>
         </MotionDiv>
       </div>

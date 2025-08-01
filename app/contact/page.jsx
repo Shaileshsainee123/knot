@@ -8,9 +8,37 @@ import { Textarea } from "@/components/ui/textarea"
 import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Youtube } from "lucide-react"
 import { motion } from "framer-motion"
 import Heading from "@/components/resuable_components/Heading"
+import Link from "next/link"
 
 const MotionDiv = motion.create('div')
+const SocialLinks = [
+    {
+        id: 1,
+        name: "Instagram",
+        href: "https://www.instagram.com/knotdelhi/",
+        icon: <Instagram className="w-5 h-5" />,
+    },
+    {
+        id: 2,
+        name: "Facebook",
+        href: "https://www.facebook.com/knotdelhi/",
+        icon: <Facebook className="w-5 h-5" />,
+    },
+    {
+        id: 3,
+        name: "Twitter",
+        href: "https://twitter.com/knotdelhi/",
+        icon: <Twitter className="w-5 h-5" />,
+    },
+    {
+        id: 4,
+        name: "Youtube",
+        href: "https://www.youtube.com/@knotdelhi",
+        icon: <Youtube className="w-5 h-5" />,
+    },
 
+
+]
 
 export default function ContactSection() {
     const [contactForm, setContactForm] = useState({
@@ -30,14 +58,14 @@ export default function ContactSection() {
             message: "",
         })
     }
-  const headingData ={
-    title: "Contact Us",
-    para: "Have questions or need more information? Reach out to us and our team will get back to you."
-  }
+    const headingData = {
+        title: "Contact Us",
+        para: "Have questions or need more information? Reach out to us and our team will get back to you."
+    }
     return (
         <section id="contact" className="py-20 bg-gradient-secondary">
             <div className="container mx-auto px-4 pt-16">
-                <Heading data={headingData}/>
+                <Heading data={headingData} />
 
                 <div className="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8">
                     <div className="lg:w-1/2 hover:shadow-[0_10px_20px_rgba(197,165,114,0.2)] transition-all duration-300 ease-in">
@@ -149,30 +177,17 @@ export default function ContactSection() {
                                     </div>
 
                                     <div className="flex space-x-4 mt-6">
-                                        <a
-                                            href="#"
-                                            className="w-10 h-10 rounded-full border border-[#C5A572] flex items-center justify-center text-[#C5A572] hover:bg-[#C5A572] hover:text-black transition-all duration-300"
-                                        >
-                                            <Instagram className="w-5 h-5" />
-                                        </a>
-                                        <a
-                                            href="#"
-                                            className="w-10 h-10 rounded-full border border-[#C5A572] flex items-center justify-center text-[#C5A572] hover:bg-[#C5A572] hover:text-black transition-all duration-300"
-                                        >
-                                            <Facebook className="w-5 h-5" />
-                                        </a>
-                                        <a
-                                            href="#"
-                                            className="w-10 h-10 rounded-full border border-[#C5A572] flex items-center justify-center text-[#C5A572] hover:bg-[#C5A572] hover:text-black transition-all duration-300"
-                                        >
-                                            <Twitter className="w-5 h-5" />
-                                        </a>
-                                        <a
-                                            href="#"
-                                            className="w-10 h-10 rounded-full border border-[#C5A572] flex items-center justify-center text-[#C5A572] hover:bg-[#C5A572] hover:text-black transition-all duration-300"
-                                        >
-                                            <Youtube className="w-5 h-5" />
-                                        </a>
+                                        {SocialLinks.map((link) => (
+                                            <Link
+                                                key={link.id}
+                                                href={link.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="w-10 h-10 rounded-full border border-[#C5A572] flex items-center justify-center text-[#C5A572] hover:bg-[#C5A572] hover:text-black transition-all duration-300"
+                                            >
+                                                {link.icon}
+                                            </Link>))}
+                                    
                                     </div>
                                 </div>
                             </div>

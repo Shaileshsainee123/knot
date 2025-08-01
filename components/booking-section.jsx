@@ -293,7 +293,7 @@ const HeadingData ={
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <Label htmlFor="package" className="text-secondary">
                   Select Package
                 </Label>
@@ -311,7 +311,7 @@ const HeadingData ={
                     <SelectItem value="diamond">Diamond - ₹100,000 (Min. Spend)</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
 
               <div>
                 <Label htmlFor="request" className="text-secondary">

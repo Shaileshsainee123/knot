@@ -55,7 +55,7 @@ export default function Footer() {
             <div className="flex items-center justify-center md:justify-start mb-6">
               <Link href="/">
                 <Image
-                  src="/TriangleLogo.png"
+                  src="/Knot_Logo.png"
                   alt="Knot Delhi Logo"
                   width={180}
                   height={100}

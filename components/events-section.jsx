@@ -4,6 +4,9 @@ import EventCard from "../components/resuable_components/eventCard"
 import { motion } from "framer-motion"
 import Heading from "./resuable_components/Heading";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { apiJson } from "@/lib/api/axiosBase";
+import EventCardPlaceholder from "./resuable_components/placeholders/EventCardPlaceholder";
 
 const MotionDiv = motion.create('div')
 const events = [
@@ -40,39 +43,65 @@ const events = [
 ]
 
 export default function EventsSection() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
   const HeadingData = {
     title: "Upcoming Events",
     para: "Join us for our exclusive events featuring world-class DJs, themed nights, and unforgettable experiences."
   }
+
+  //=========== function to get the events ==================//
+
+  const getEventList = async () => {
+    setLoading(true);
+    try {
+      const response = await apiJson.get("api/Website/getAllEventList");
+
+      if (response.data?.result) {
+        setEvents(response.data.result);
+      } else {
+        console.error("Unexpected response format:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching event list:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getEventList();
+  }, []);
+
   return (
     <section id="events" className="py-14 bg-black">
       <div className="container mx-auto px-4">
         <Heading data={HeadingData} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.map((event, index) => (
-            <MotionDiv
-              key={event.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              viewport={{ once: true }}
-            >
-              <EventCard event={event} />
-            </MotionDiv>
-          ))}
+          {loading
+            ? Array(3).fill(0).map((_, idx) => <EventCardPlaceholder key={idx} />) : events?.map((event, index) => (
+              <MotionDiv
+                key={event.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+              >
+                <EventCard event={event} />
+              </MotionDiv>
+            ))}
         </div>
 
-        <div className="text-center mt-12">
+       {!loading && events?.length > 0 && <div className="text-center mt-12">
           <Link href="/events">
-          <Button
-            variant="outline"
-            className="bg-transparent border-primary text-primary hover:bg-[#C5A572] hover:text-black px-8 py-3"
-          >
-            View All Events
-          </Button>
+            <Button
+              variant="outline"
+              className="bg-transparent border-primary text-primary hover:bg-[#C5A572] hover:text-black px-8 py-3"
+            >
+              View All Events
+            </Button>
           </Link>
-        </div>
+        </div>}
       </div>
     </section>
   )

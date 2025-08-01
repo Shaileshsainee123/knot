@@ -6,7 +6,10 @@ import Footer from '@/components/footer';
 import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata = {
-  title: 'Knot Delhi',
+ title: {
+    default: "Knot-Delhi | The Nightclub That Never Unravels",
+    template: "%s | Knot-Delhi",
+  },
   description: 'In the Knot, the night never unravels. We are watching, waiting, and welcoming you into a world of endless beats and unforgettable moments',
 }
 

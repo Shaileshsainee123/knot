@@ -2,6 +2,7 @@ import React from 'react'
 import { Clock } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import Link from 'next/link'
 const eventCard = ({ event }) => {
     return (
         <div
@@ -9,8 +10,8 @@ const eventCard = ({ event }) => {
         >
             <div className="relative">
                 <Image
-                    src={event.image || "/placeholder.svg"}
-                    alt={event.title}
+                    src={event?.theme_Image || "/placeholder.svg"}
+                    alt={event?.theme_Name}
                     width={600}
                     height={400}
                     className="w-full h-64 object-cover"
@@ -20,17 +21,19 @@ const eventCard = ({ event }) => {
                 </div>
             </div>
             <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-white">{event.title}</h3>
+                <h3 className="text-xl font-bold mb-2 text-white">{event.theme_Name}</h3>
                 <p className="text-muted mb-4">{event.description}</p>
                 <div className="flex items-center mb-4">
                     <Clock className="w-5 h-5 text-primary mr-2" />
-                    <span className="text-secondary">{event.time}</span>
+                    <span className="text-secondary">{`${event?.startTime} - ${event?.endTime}`}</span>
                 </div>
+                <Link href={'#booking'}>
                 <Button
                     className={"w-full bg-transparent border border-primary text-primary hover:bg-[#C5A572] hover:text-black transition-all duration-500"}
                 >
                     Book Now
                 </Button>
+                </Link>
             </div>
         </div>
     )
