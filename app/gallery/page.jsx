@@ -5,47 +5,47 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X, Download, ZoomIn } from "lucide-react"
 import Heading from "@/components/resuable_components/Heading"
 import { getGalleryList } from "@/lib/api/eventApi"
+import { Button } from "@/components/ui/button"
 
 
 const categories = ["All", "Events", "Atmosphere", "Interior"]
 
 export default function GalleryPage() {
-    const [selectedCategory, setSelectedCategory] = useState("All")
-    const [selectedImage, setSelectedImage] = useState(null)
-
     const headingData = {
         title: "Gallery",
         para: "Immerse yourself in the electric atmosphere of Neon Nights through our stunning visual collection",
     }
+    const [selectedCategory, setSelectedCategory] = useState("All")
+    const [selectedImage, setSelectedImage] = useState(null)
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+    const [galleryItems, setGalleryItems] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-      const [galleryItems, setGalleryItems] = useState([]);
-      const [loading, setLoading] = useState(false);
-    
-      //=========== function to get the events ==================//
-    
-      const getGalleryItems = async () => {
+    //=========== function to get the Gallery Image ==================//
+
+    const getGalleryItems = async () => {
         setLoading(true);
         try {
-          const response = await getGalleryList();
-    
-          if (response.data?.result) {
-            setGalleryItems(response.data.result);
-          } else {
-            console.error("Unexpected response format:", response.data);
-          }
+            const response = await getGalleryList({ page: currentPage, limit: limit,name:selectedCategory });
+
+            if (response.data?.result) {
+                setGalleryItems(response.data.result);
+                setTotalPages(response.data?.totalPages);
+            } else {
+                console.error("Unexpected response format:", response.data);
+            }
         } catch (error) {
-          console.error("Error fetching event list:", error);
+            console.error("Error fetching event list:", error);
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
-      };
-      useEffect(() => {
+    };
+    useEffect(() => {
         getGalleryItems();
-      }, []);
+    }, [selectedCategory || "All", currentPage, limit]);
 
-
-       const filteredImages =
-        selectedCategory === "All" ? galleryItems : galleryItems.filter((img) => img.category === selectedCategory)
     return (
         <div className="min-h-screen bg-gradient-dark pt-20">
             {/* Header */}
@@ -82,7 +82,7 @@ export default function GalleryPage() {
                 {/* Gallery Grid */}
                 <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
                     <AnimatePresence>
-                        {filteredImages.map((image, index) => (
+                        {galleryItems.map((image, index) => (
                             <motion.div
                                 key={image.id}
                                 layout
@@ -140,8 +140,31 @@ export default function GalleryPage() {
                             </motion.div>
                         ))}
                     </AnimatePresence>
+
                 </motion.div>
+                {!loading && galleryItems?.length > 0 && <div className="flex justify-center items-center gap-4 my-6">
+                    <Button
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        variant="outline"
+                        className="border-primary text-primary hover:bg-[#C5A572] hover:text-black px-6 py-2"
+                    >
+                        Prev
+                    </Button>
+
+                    <span className="text-white text-lg">{currentPage} / {totalPages}</span>
+
+                    <Button
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        variant="outline"
+                        className="border-primary text-primary hover:bg-[#C5A572] hover:text-black px-6 py-2"
+                    >
+                        Next
+                    </Button>
+                </div>}
             </div>
+
 
             {/* Lightbox Modal */}
             <AnimatePresence>

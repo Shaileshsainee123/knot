@@ -1,38 +1,40 @@
+'use client'
 import { Button } from "@/components/ui/button"
+import { apiJson } from "@/lib/api/axiosBase"
 import { Calendar, ArrowRight } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "Top 10 DJs to Watch in Delhi's Nightlife Scene",
-    date: "June 18, 2025",
-    excerpt:
-      "Discover the most talented DJs currently making waves in Delhi's vibrant nightlife. From techno to hip-hop, these artists are defining the sound of the city.",
-    image:
-      "https://readdy.ai/api/search-image?query=professional%20DJ%20equipment%2C%20high-end%20turntables%2C%20mixer%2C%20headphones%2C%20atmospheric%20lighting%2C%20professional%20photography%2C%20nightclub%20setting&width=600&height=400&seq=blog1&orientation=landscape",
-  },
-  {
-    id: 2,
-    title: "The Art of Mixology: Knot Delhi's Signature Cocktails",
-    date: "June 12, 2025",
-    excerpt:
-      "Go behind the scenes with our head mixologist as he reveals the secrets behind our most popular signature cocktails and their unique ingredients.",
-    image:
-      "https://readdy.ai/api/search-image?query=elegant%20cocktails%20on%20bar%20counter%2C%20premium%20spirits%2C%20bartender%20tools%2C%20atmospheric%20lighting%2C%20professional%20photography%2C%20high-end%20nightclub%20setting&width=600&height=400&seq=blog2&orientation=landscape",
-  },
-  {
-    id: 3,
-    title: "Nightclub Fashion Guide: What to Wear for a Night Out",
-    date: "June 5, 2025",
-    excerpt:
-      "Our style experts share tips on the latest nightlife fashion trends and how to dress to impress for your next visit to Knot Delhi.",
-    image:
-      "https://readdy.ai/api/search-image?query=elegant%20party%20outfits%2C%20luxury%20fashion%2C%20nightclub%20attire%2C%20professional%20photography%2C%20stylish%20clothing%20for%20nightlife&width=600&height=400&seq=blog3&orientation=landscape",
-  },
-]
 
 export default function BlogSection() {
+  const [blogPosts, setBlogPosts] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
+  //=========== function to get the blog posts ==================//
+  const getBlogPosts = async () => {
+    setLoading(true);
+    try {
+      const response = await apiJson.get(`api/Website/getBlogList?page=${currentPage}&limit=${limit}`);
+      if (response.data?.result) {
+        setBlogPosts(response.data.result);
+        setTotalPages(response.data?.totalPages);
+      } else {
+        console.error("Unexpected response format:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching blog list:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getBlogPosts();
+  }, [currentPage, limit]);
   return (
     <div className="pt-12">
       <div className="container mx-auto px-4">
@@ -41,7 +43,7 @@ export default function BlogSection() {
           {blogPosts.map((post) => (
             <div key={post.id} className="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
               <Image
-                src={post.image || "/placeholder.svg"}
+                src={post?.thumbnailImage || "/placeholder.svg"}
                 alt={post.title}
                 width={600}
                 height={400}
@@ -50,30 +52,47 @@ export default function BlogSection() {
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <Calendar className="w-5 h-5 text-[#C5A572] mr-2" />
-                  <span className="text-gray-400 text-sm">{post.date}</span>
+                  <span className="text-gray-400 text-sm"> {new Date(post?.createdAt).toLocaleDateString("en-GB", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}</span>
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white">{post.title}</h3>
-                <p className="text-gray-400 mb-4">{post.excerpt}</p>
-                <a
-                  href="#"
+              <div className="text-gray-400 mb-4" dangerouslySetInnerHTML={{ __html: post.description.length > 100 ? post.description.slice(0, 60) + "..." : post.description }} />
+                <Link
+                  href={`/blog/${post.slug}`}
                   className="inline-flex items-center text-[#C5A572] hover:text-white transition-all duration-300"
                 >
                   Read More
                   <ArrowRight className="w-4 h-4 ml-2" />
-                </a>
+                </Link>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        {!loading && blogPosts?.length > 0 && <div className="flex justify-center items-center gap-4 my-6">
           <Button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
             variant="outline"
-            className="bg-transparent border-[#C5A572] text-[#C5A572] hover:bg-[#C5A572] hover:text-black px-8 py-3"
+            className="border-primary text-primary hover:bg-[#C5A572] hover:text-black px-6 py-2"
           >
-            View All Posts
+            Prev
           </Button>
-        </div>
+
+          <span className="text-white text-lg">{currentPage} / {totalPages}</span>
+
+          <Button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            variant="outline"
+            className="border-primary text-primary hover:bg-[#C5A572] hover:text-black px-6 py-2"
+          >
+            Next
+          </Button>
+        </div>}
       </div>
     </div>
   )

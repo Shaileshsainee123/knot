@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image"
 import Heading from "./resuable_components/Heading"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import { apiJson } from "@/lib/api/axiosBase"
+import { toast } from "react-toastify"
 
 const formVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -20,65 +23,104 @@ const formVariants = {
 const MotionDiv = motion.create('div')
 
 
-
 export default function BookingSection() {
-  const [activeTab, setActiveTab] = useState("guestList")
-  const [guestListForm, setGuestListForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    guests: "",
-    terms: false,
-  })
-
-  const [tableForm, setTableForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    date: "",
-    time: "",
-    guests: "",
-    package: "",
-    request: "",
-    terms: false,
-  })
-
-  const handleGuestListSubmit = (e) => {
-    e.preventDefault()
-    alert("Thank you for joining our guest list! We will confirm your reservation shortly.")
-    setGuestListForm({
-      name: "",
-      email: "",
-      phone: "",
-      event: "",
-      guests: "",
-      terms: false,
-    })
+  const HeadingData = {
+    title: "Book Your Experience",
+    para: " Choose between joining our guest list or reserving a VIP table for your next visit to Knot Delhi."
   }
+  const [activeTab, setActiveTab] = useState("guestList")
+  const [loading, setLoading] = useState(false)
 
-  const handleTableSubmit = (e) => {
-    e.preventDefault()
-    alert("Thank you for your table reservation! Our team will contact you to confirm the details.")
-    setTableForm({
-      name: "",
+  //============= Validation for Guest List ==============\\
+  const validationSchema = Yup.object({
+    fullName: Yup.string().required("Name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    phone: Yup.string()
+      .matches(/^[6-9]\d{9}$/, "Invalid phone number")
+      .required("Phone is required"),
+    no_of_Guests: Yup.number()
+      .typeError("Guests must be a number")
+      .min(1, "At least 1 guest required")
+      .required("Guests field is required"),
+    terms: Yup.boolean().oneOf([true], "You must accept the terms"),
+  });
+
+  //============= Validation for Table ==============\\
+  const tableValidationSchema = Yup.object({
+    fullName: Yup.string().required("Name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    phone: Yup.string()
+      .matches(/^[6-9]\d{9}$/, "Invalid phone number")
+      .required("Phone is required"),
+    Date: Yup.date().required("Date is required"),
+    Time: Yup.string().required("Time is required"),
+    no_of_Guests: Yup.number()
+      .typeError("Guests must be a number")
+      .min(1, "At least 1 guest required")
+      .required("Guests field is required"),
+    request: Yup.string().required("Request is required"),
+    terms: Yup.boolean().oneOf([true], "You must accept the terms"),
+  })
+  //============= Formik for Guest List ==============\\
+  const formik = useFormik({
+    initialValues: {
+      fullName: "",
       email: "",
       phone: "",
-      date: "",
-      time: "",
-      guests: "",
-      package: "",
+      no_of_Guests: 1,
+      terms: false,
+    },
+    validationSchema,
+    onSubmit: async(values,{resetForm}) => {
+     try {
+        setLoading(true);
+        const { data } = await apiJson.post('/api/Website/joinGuest', values);
+        setLoading(false);
+       toast.success(data?.message || "Guest List submitted successfully");
+        resetForm(); 
+      } catch (error) {
+        toast.error(error.response?.data?.message || error.message);
+        console.error('Error:', error.response?.data || error.message);
+      } finally {
+        setLoading(false);
+      }
+      
+    }
+  });
+
+  const tableFormik = useFormik({
+    initialValues: {
+      fullName: "",
+      email: "",
+      phone: "",
+      Date: "",
+      Time: "",
+      no_of_Guests: 1,
       request: "",
       terms: false,
-    })
-  }
-const HeadingData ={
-  title:"Book Your Experience",
-  para:" Choose between joining our guest list or reserving a VIP table for your next visit to Knot Delhi."
-}
+    },
+    validationSchema: tableValidationSchema,
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        setLoading(true);
+        const { data } = await apiJson.post('/api/Website/bookTable', values);
+        setLoading(false);
+        toast.success(data?.message || "Table Booked successfully");
+        resetForm(); 
+      } catch (error) {
+        toast.error(error.response?.data?.message || error.message);
+        console.error('Error:', error.response?.data || error.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+
+  })
+
   return (
     <section id="booking" className="pt-14 bg-black ">
       <div className="container mx-auto px-4">
-       <Heading data={HeadingData}/>
+        <Heading data={HeadingData} />
 
         {/* Tab list */}
 
@@ -118,18 +160,23 @@ const HeadingData ={
             className="mx-auto max-w-2xl bg-[#2A2A2AF2] rounded-lg p-8 drop-shadow-[18_8px_17px_#22222240]"
           >
             <h3 className="text-2xl font-bold mb-6 text-white text-center">Join Guest List</h3>
-            <form onSubmit={handleGuestListSubmit} className="space-y-6">
+            <form onSubmit={formik.handleSubmit} className="space-y-6">
               <div>
                 <Label htmlFor="fullName" className="text-secondary">
                   Full Name
                 </Label>
                 <Input
+                  type="text"
+                  name="fullName"
                   id="fullName"
-                  value={guestListForm.name}
-                  onChange={(e) => setGuestListForm({ ...guestListForm, name: e.target.value })}
+                  value={formik.values.fullName}
+                  onChange={formik.handleChange}
                   placeholder="Your name"
                   className="bg-[#1E1E1E] text-white placeholder:text-white"
                 />
+                {formik.errors.fullName && formik.touched.fullName && (
+                  <p className="text-red-500 text-sm mt-1">{formik.errors.fullName}</p>
+                )}
               </div>
 
               <div>
@@ -139,57 +186,71 @@ const HeadingData ={
                 <Input
                   id="email"
                   type="email"
-                  value={guestListForm.email}
-                  onChange={(e) => setGuestListForm({ ...guestListForm, email: e.target.value })}
+                  name="email"
+                  value={formik.values?.email}
+                  onChange={formik.handleChange}
                   placeholder="Your email"
                   className="bg-[#1E1E1E] text-white placeholder:text-white"
                 />
+                {formik.errors.email && formik.touched.email && (
+                  <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
+                )}
               </div>
 
               <div>
                 <Label htmlFor="contact" className="text-secondary">
-                <span className="flex gap-1">  Phone Number  <Image src='/whatsapp_ic.png' alt="Whatsapp_logo" width={16} height={16}/> <span>(Whatsapp)</span></span>
+                  <span className="flex gap-1">  Phone Number  <Image src='/whatsapp_ic.png' alt="Whatsapp_logo" width={16} height={16} /> <span>(Whatsapp)</span></span>
                 </Label>
                 <Input
                   id="contact"
                   type="tel"
-                  value={guestListForm.phone}
-                  onChange={(e) => setGuestListForm({ ...guestListForm, phone: e.target.value })}
+                  name="phone"
+                  value={formik.values?.phone}
+                  onChange={formik.handleChange}
                   placeholder="Your phone"
                   className="bg-[#1E1E1E] text-white placeholder:text-white"
                 />
+                {formik.errors.phone && formik.touched.phone && (
+                  <p className="text-red-500 text-sm mt-1">{formik.errors.phone}</p>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="guests" className="text-secondary">
+                <Label htmlFor="no_of_Guests" className="text-secondary">
                   Number of Guests
                 </Label>
                 <Input
-                  id="guests"
+                  id="no_of_Guests"
+                  name="no_of_Guests"
                   type="number"
                   min="1"
                   max="10"
-                  value={guestListForm.guests}
-                  onChange={(e) => setGuestListForm({ ...guestListForm, guests: e.target.value })}
+                  value={formik.values?.no_of_Guests}
+                  onChange={formik.handleChange}
                   placeholder="Number of guests"
                   className="bg-[#1E1E1E] appearance-none text-white placeholder:text-white"
                 />
+                {formik.errors.no_of_Guests && formik.touched.no_of_Guests && (
+                  <p className="text-red-500 text-sm mt-1">{formik.errors.no_of_Guests}</p>
+                )}
               </div>
 
               <div className="flex items-center space-x-2">
                 <Checkbox
                   className="mb-3"
                   id="gl-terms"
-                  checked={guestListForm.terms}
-                  onCheckedChange={(checked) => setGuestListForm({ ...guestListForm, terms: checked })}
+                  checked={formik.values.terms}
+                  onCheckedChange={() => formik.setFieldValue("terms", !formik.values.terms)}
                 />
                 <Label htmlFor="gl-terms" className="text-secondary">
                   I agree to the terms and conditions
                 </Label>
+
+
               </div>
 
-              <Button type="submit" className="w-full bg-primary font-bold text-black hover:bg-[#C5A572]/80 py-3">
-               Add Guest List
+              <Button disabled={!formik.values.terms || loading} type="submit" className="w-full bg-primary font-bold text-black hover:bg-[#C5A572]/80 py-3">
+                Add Guest List
               </Button>
             </form>
           </MotionDiv>)
@@ -207,18 +268,22 @@ const HeadingData ={
             className="max-w-2xl mx-auto bg-[#2A2A2AF2] rounded-lg p-8"
           >
             <h3 className="text-2xl font-bold mb-6 text-center text-white">Reserve a Table</h3>
-            <form onSubmit={handleTableSubmit} className="space-y-6">
+            <form onSubmit={tableFormik.handleSubmit} className="space-y-6">
               <div>
                 <Label htmlFor="fullName" className="text-secondary">
                   Full Name
                 </Label>
                 <Input
                   id="fullName"
-                  value={tableForm.name}
-                  onChange={(e) => setTableForm({ ...tableForm, name: e.target.value })}
-                  placeholder="Your name"
+                  name="fullName"
+                  value={tableFormik.values.fullName}
+                  onChange={tableFormik.handleChange}
+                  placeholder="Your full name"
                   className="bg-[#1E1E1E] text-white placeholder:text-white"
                 />
+                {tableFormik.errors.fullName && tableFormik.touched.fullName && (
+                  <p className="text-red-500 text-sm mt-1">{tableFormik.errors.fullName}</p>
+                )}
               </div>
 
               <div>
@@ -227,26 +292,34 @@ const HeadingData ={
                 </Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
-                  value={tableForm.email}
-                  onChange={(e) => setTableForm({ ...tableForm, email: e.target.value })}
+                  value={tableFormik.values.email}
+                  onChange={tableFormik.handleChange}
                   placeholder="Your email"
                   className="bg-[#1E1E1E] text-white placeholder:text-white"
                 />
+                {tableFormik.errors.email && tableFormik.touched.email && (
+                  <p className="text-red-500 text-sm mt-1">{tableFormik.errors.email}</p>
+                )}
               </div>
 
               <div>
                 <Label htmlFor="phone" className="text-secondary">
-                  <span className="flex gap-1">  Phone Number  <Image src='/whatsapp_ic.png' alt="Whatsapp_logo" width={16} height={16}/> <span>(Whatsapp)</span></span>
+                  <span className="flex gap-1">  Phone Number  <Image src='/whatsapp_ic.png' alt="Whatsapp_logo" width={16} height={16} /> <span>(Whatsapp)</span></span>
                 </Label>
                 <Input
                   id="phone"
                   type="tel"
-                  value={tableForm.phone}
-                  onChange={(e) => setTableForm({ ...tableForm, phone: e.target.value })}
+                  name="phone"
+                  value={tableFormik.values.phone}
+                  onChange={tableFormik.handleChange}
                   placeholder="Your phone"
                   className="bg-[#1E1E1E] text-white placeholder:text-white"
                 />
+                {tableFormik.errors.phone && tableFormik.touched.phone && (
+                  <p className="text-red-500 text-sm mt-1">{tableFormik.errors.phone}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -257,10 +330,14 @@ const HeadingData ={
                   <Input
                     id="date"
                     type="date"
-                    value={tableForm.date}
-                    onChange={(e) => setTableForm({ ...tableForm, date: e.target.value })}
+                    name="Date"
+                    value={tableFormik.values.Date}
+                    onChange={tableFormik.handleChange}
                     className="bg-[#1E1E1E] text-white placeholder:text-white"
                   />
+                  {tableFormik.errors.Date && tableFormik.touched.Date && (
+                    <p className="text-red-500 text-sm mt-1">{tableFormik.errors.Date}</p>
+                  )}
                 </div>
 
                 <div>
@@ -269,28 +346,36 @@ const HeadingData ={
                   </Label>
                   <Input
                     id="time"
+                    name="Time"
                     type="time"
-                    value={tableForm.time}
-                    onChange={(e) => setTableForm({ ...tableForm, time: e.target.value })}
+                    value={tableFormik.values.Time}
+                    onChange={tableFormik.handleChange}
                     className="bg-[#1E1E1E] text-white placeholder:text-white"
                   />
+                  {tableFormik.errors.Time && tableFormik.touched.Time && (
+                    <p className="text-red-500 text-sm mt-1">{tableFormik.errors.Time}</p>
+                  )}
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="guests" className="text-secondary">
+                <Label htmlFor="no_of_Guests" className="text-secondary">
                   Number of Guests
                 </Label>
                 <Input
-                  id="guests"
+                  id="no_of_Guests"
                   type="number"
+                  name="no_of_Guests"
                   min="1"
                   max="20"
-                  value={tableForm.guests}
-                  onChange={(e) => setTableForm({ ...tableForm, guests: e.target.value })}
+                  value={tableFormik.values.no_of_Guests}
+                  onChange={tableFormik.handleChange}
                   placeholder="Number of guests"
                   className="bg-[#1E1E1E] text-white placeholder:text-white"
                 />
+                {tableFormik.errors.no_of_Guests && tableFormik.touched.no_of_Guests && (
+                  <p className="text-red-500 text-sm mt-1">{tableFormik.errors.no_of_Guests}</p>
+                )}
               </div>
 
               {/* <div>
@@ -319,27 +404,31 @@ const HeadingData ={
                 </Label>
                 <Textarea
                   id="request"
-                  value={tableForm.request}
-                  onChange={(e) => setTableForm({ ...tableForm, request: e.target.value })}
+                  name="request"
+                  value={tableFormik.values.request}
+                  onChange={tableFormik.handleChange}
                   placeholder="Any special requests?"
                   className="bg-[#1E1E1E] text-white placeholder:text-white"
                   rows={3}
                 />
+                {tableFormik.errors.request && tableFormik.touched.request && (
+                  <p className="text-red-500 text-sm mt-1">{tableFormik.errors.request}</p>
+                )}
               </div>
 
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="terms"
                   className="mb-3"
-                  checked={tableForm.terms}
-                  onCheckedChange={(checked) => setTableForm({ ...tableForm, terms: checked })}
+                  checked={tableFormik.values.terms}
+                  onCheckedChange={() => tableFormik.setFieldValue("terms", !tableFormik.values.terms)}
                 />
                 <Label htmlFor="terms" className="text-secondary">
                   I agree to the terms and conditions
                 </Label>
               </div>
 
-              <Button type="submit" className="w-full bg-primary text-black hover:bg-[#C5A572]/80 py-3 font-semibold">
+              <Button disabled={!tableFormik.values.terms} type="submit" className="w-full bg-primary text-black hover:bg-[#C5A572]/80 py-3 font-semibold">
                 Reserve Table
               </Button>
             </form>

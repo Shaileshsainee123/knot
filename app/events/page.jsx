@@ -56,19 +56,18 @@ const EventsPage = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const eventsPerPage = 3;
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const totalPages = Math.ceil(events.length / eventsPerPage);
-  const startIndex = (currentPage - 1) * eventsPerPage;
-  const paginatedEvents = events.slice(startIndex, startIndex + eventsPerPage);
 
   const getEvents = async () => {
     setLoading(true);
     try {
-      const response = await getEventList();
+      const response = await getEventList({page: currentPage, limit: limit});
 
       if (response.data?.result) {
         setEvents(response.data.result);
+        setTotalPages(response.data?.totalPages);
       } else {
         console.error("Unexpected response format:", response.data);
       }
@@ -80,7 +79,7 @@ const EventsPage = () => {
   };
   useEffect(() => {
     getEvents();
-  }, []);
+  }, [currentPage, limit]);
 
 
 
@@ -92,7 +91,7 @@ const EventsPage = () => {
 
          {loading
             ? Array(3).fill(0).map((_, idx) => <EventCardPlaceholder key={idx} />) : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {paginatedEvents.map((event, index) => (
+            {events?.map((event, index) => (
               <MotionDiv
                 key={event.id}
                 initial={{ opacity: 0, y: 50 }}
@@ -105,7 +104,7 @@ const EventsPage = () => {
             ))}
           </div>}
 
-          <div className="flex justify-center items-center gap-4 mt-12">
+         {!loading && events.length >0 &&  <div className="flex justify-center items-center gap-4 mt-12">
             <Button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
@@ -125,7 +124,7 @@ const EventsPage = () => {
             >
               Next
             </Button>
-          </div>
+          </div>}
         </div>
       </section>
     </div>

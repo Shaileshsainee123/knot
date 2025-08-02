@@ -4,6 +4,7 @@ import './globals.css'
 import { Montserrat } from 'next/font/google'
 import Footer from '@/components/footer';
 import { AuthProvider } from '@/context/AuthContext';
+import { ToastContainer } from 'react-toastify';
 
 export const metadata = {
  title: {
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
           <Navigation />
           {children}
           <Footer />
+          <ToastContainer />
         </AuthProvider>
       </body>
     </html>
