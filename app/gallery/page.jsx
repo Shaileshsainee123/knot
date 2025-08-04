@@ -209,7 +209,7 @@ export default function GalleryPage() {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => setSelectedImage(null)}
-                                className="absolute top-4 right-4 z-10 p-2 rounded-full border border-primmary bg-black/50 text-white hover:bg-black/70 transition-colors"
+                                className="absolute top-4 right-4 z-10 p-2 rounded-full border border-primmary bg-black/50 text-white hover:bg-[#c5a572]/70 transition-colors"
                             >
                                 <X className="w-6 h-6" />
                             </motion.button>
@@ -230,12 +230,12 @@ export default function GalleryPage() {
                             >
                                 <h3 className="text-2xl font-bold text-white mb-2">{selectedImage.title}</h3>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-purple-400 font-semibold">{selectedImage.categoryName}</span>
+                                    <span className="text-primary font-semibold">{selectedImage.categoryName}</span>
                                     <div className="flex items-center gap-4">
                                         <motion.button
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
-                                            className="p-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+                                            className="p-2 rounded-full bg-primary text-white hover:bg-[#c5a572]/80 transition-colors"
                                         >
                                             <Download className="w-5 h-5" />
                                         </motion.button>
