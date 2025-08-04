@@ -55,16 +55,7 @@ export default function AboutSection() {
             <h2 className="hidden md:block text-3xl md:text-4xl font-bold mb-6 bg-gradient-heading bg-clip-text text-transparent">
               {aboutData?.title ? aboutData?.title : "About Knot Delhi"}
             </h2>
-            <p className="text-secondary mb-6 text-center md:text-left leading-relaxed">
-              Established in 2018, Knot Delhi has quickly become the pinnacle of Delhi's nightlife scene. Our club
-              offers an unparalleled experience combining luxurious ambiance, state-of-the-art sound systems, and
-              world-class service.
-            </p>
-            <p className="text-secondary mb-8 text-center md:text-left leading-relaxed">
-              Located in the heart of Delhi, our 15,000 sq. ft. venue features multiple dance floors, VIP sections, and
-              a rooftop lounge with breathtaking city views. Our team of mixologists crafts signature cocktails while
-              our resident DJs and international guests create the perfect soundtrack for your night.
-            </p>
+            <div className="text-secondary mb-6 text-center md:text-left leading-relaxed" dangerouslySetInnerHTML={{ __html: aboutData?.description }} />
 
             {/* Stats */}
             {loading ? (
