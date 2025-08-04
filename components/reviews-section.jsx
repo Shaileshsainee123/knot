@@ -9,45 +9,6 @@ import ReviewPlaceholder from "./resuable_components/placeholders/ReviewPlacehol
 
 const MotionDiv = motion.create('div')
 
-const reviews = [
-  {
-    name: "Rajesh Kumar",
-    initials: "RK",
-    content:
-      "The ambiance and service at Knot Delhi Club are absolutely exceptional. A perfect place for business meetings.",
-    rating: 4.5,
-    date: "June 15, 2025",
-  },
-  {
-    name: "Priya Sharma",
-    initials: "PS",
-    content: "I've been a member for 3 years and the experience keeps getting better. Highly recommend!",
-    rating: 5,
-    date: "June 10, 2025",
-  },
-  {
-    name: "Amit Patel",
-    initials: "AP",
-    content: "The facilities are world-class and the staff is incredibly professional. Worth every penny.",
-    rating: 2.5,
-    date: "April 01, 2025",
-  },
-  {
-    name: "Sneha Gupta",
-    initials: "SG",
-    content: "A sanctuary in the heart of Delhi. The rooftop terrace is my favorite spot to unwind.",
-    rating: 4.5,
-    date: "July 03, 2025",
-  },
-  {
-    name: "Vikram Singh",
-    initials: "VS",
-    content: "The attention to detail in every aspect of the club is remarkable. Truly premium experience.",
-    rating: 5,
-    date: "June 15, 2025",
-  },
-]
-const duplicatedReviews = [...reviews, ...reviews]
 export default function ReviewsSection() {
 
   const [isLoading, setIsLoading] = useState(true)
@@ -58,7 +19,6 @@ export default function ReviewsSection() {
     const fetchReviews = async () => {
       try {
         const res = await apiJson.get("api/Website/getAllReview")
-        console.log("res", res?.data)
         if (res?.data.status === 1) {
           setReviewsData(res?.data?.result || [])
           setIsLoading(false)

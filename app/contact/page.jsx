@@ -47,7 +47,7 @@ const SocialLinks = [
 export default function ContactSection() {
     const headingData = {
         title: "Contact Us",
-        para: "Have questions o    r need more information? Reach out to us and our team will get back to you."
+        para: "Have questions or need more information? Reach out to us and our team will get back to you."
     }
     const [loading, setLoading] = useState(false);
     //============= Validation for contact form =============//
@@ -208,12 +208,12 @@ export default function ContactSection() {
                                 <div className="space-y-4">
                                     <div className="flex items-center">
                                         <Phone className="w-6 h-6 text-[#C5A572] mr-3" />
-                                        <p className="text-gray-300">+91 98765 43210</p>
+                                        <p className="text-gray-300"><a href="tel:+918800015162">+91 88000 15162</a></p>
                                     </div>
 
                                     <div className="flex items-center">
-                                        <Mail className="w-6 h-6 text-[#C5A572] mr-3" />
-                                        <p className="text-gray-300">info@knotdelhi.com</p>
+                                        <Mail className="w-6 h-6 text-[rgb(197,165,114)] mr-3" />
+                                        <p className="text-gray-300"><a href="mailto:info@knotdelhi.com">info@knotdelhi.com</a></p>
                                     </div>
 
                                     <div className="flex space-x-4 mt-6">

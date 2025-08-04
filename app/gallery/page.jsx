@@ -28,7 +28,13 @@ export default function GalleryPage() {
     const getGalleryItems = async () => {
         setLoading(true);
         try {
-            const response = await getGalleryList({ page: currentPage, limit: limit,name:selectedCategory });
+            const params = {
+                page: currentPage,
+                limit,
+                ...(selectedCategory !== "All" && { name: selectedCategory }),
+            };
+
+            const response = await getGalleryList(params);
 
             if (response.data?.result) {
                 setGalleryItems(response.data.result);
@@ -37,14 +43,28 @@ export default function GalleryPage() {
                 console.error("Unexpected response format:", response.data);
             }
         } catch (error) {
-            console.error("Error fetching event list:", error);
+            console.error("Error fetching gallery list:", error);
         } finally {
             setLoading(false);
         }
     };
+
     useEffect(() => {
-        getGalleryItems();
-    }, [selectedCategory || "All", currentPage, limit]);
+        if (selectedCategory !== "All") {
+            setCurrentPage(1);
+        } else {
+            getGalleryItems();
+        }
+    }, [selectedCategory]);
+
+    useEffect(() => {
+        // This will run AFTER selectedCategory change and currentPage reset
+        if (selectedCategory === "All" || currentPage === 1) {
+            getGalleryItems();
+        }
+    }, [currentPage, limit,selectedCategory]);
+
+
 
     return (
         <div className="min-h-screen bg-gradient-dark pt-20">

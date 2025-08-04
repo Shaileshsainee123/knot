@@ -31,10 +31,12 @@ const BlogDetailPage = () => {
 
   return (
     <div className="py-20">
-      <header className="bg-gradient-secondary container text-white py-8 px-4 flex items-center">
+      <header className="bg-gradient-secondary container text-white py-8 px-4 ">
+         <div className="max-w-5xl mx-auto px-4 flex items-center">
         <Link href="/blog" className="hover:text-primary">Blog</Link>
         <ChevronRight className="mx-2 text-xs" />
-        <span>{slug}</span>
+        <span>{slug?.length>50 ? slug.substring(0, 50) + '...' : slug}</span>
+        </div>
       </header>
 
       <section id="events" className="pt-14 bg-black min-h-[50vh]">
