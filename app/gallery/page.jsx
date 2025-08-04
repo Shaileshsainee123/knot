@@ -89,7 +89,7 @@ export default function GalleryPage() {
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                transition={{ duration: 0.3 }}
                                 whileHover={{ y: -10 }}
                                 className="group relative overflow-hidden rounded-2xl bg-gradient-secondary  border border-muted"
                             >

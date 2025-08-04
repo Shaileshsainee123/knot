@@ -40,37 +40,65 @@ export default function BlogSection() {
       <div className="container mx-auto px-4">
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post) => (
-            <div key={post.id} className="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
-              <Image
-                src={post?.thumbnailImage || "/placeholder.svg"}
-                alt={post.title}
-                width={600}
-                height={400}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <Calendar className="w-5 h-5 text-[#C5A572] mr-2" />
-                  <span className="text-gray-400 text-sm"> {new Date(post?.createdAt).toLocaleDateString("en-GB", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}</span>
+          {loading ? (
+            Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="bg-gray-900 rounded-lg overflow-hidden shadow-lg animate-pulse">
+                <div className="w-full h-56 bg-gray-800" />
+                <div className="p-6">
+                  <div className="h-4 bg-gray-700 w-1/3 mb-4 rounded" />
+                  <div className="h-6 bg-gray-600 w-2/3 mb-3 rounded" />
+                  <div className="space-y-2 mb-4">
+                    <div className="h-4 bg-gray-700 rounded w-full" />
+                    <div className="h-4 bg-gray-700 rounded w-5/6" />
+                  </div>
+                  <div className="h-4 bg-gray-600 w-24 rounded" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-white">{post.title}</h3>
-              <div className="text-gray-400 mb-4" dangerouslySetInnerHTML={{ __html: post.description.length > 100 ? post.description.slice(0, 60) + "..." : post.description }} />
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="inline-flex items-center text-[#C5A572] hover:text-white transition-all duration-300"
-                >
-                  Read More
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Link>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            blogPosts.map((post) => (
+              <div key={post.id} className="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+                <Image
+                  src={post?.thumbnailImage || "/placeholder.svg"}
+                  alt={post.title}
+                  width={600}
+                  height={400}
+                  className="w-full h-56 object-cover"
+                />
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    <Calendar className="w-5 h-5 text-[#C5A572] mr-2" />
+                    <span className="text-gray-400 text-sm">
+                      {new Date(post?.createdAt).toLocaleDateString("en-GB", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-white">{post.title}</h3>
+                  <div
+                    className="text-gray-400 mb-4"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        post.description.length > 100
+                          ? post.description.slice(0, 60) + "..."
+                          : post.description,
+                    }}
+                  />
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="inline-flex items-center text-[#C5A572] hover:text-white transition-all duration-300"
+                  >
+                    Read More
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Link>
+                </div>
+              </div>
+            ))
+          )}
         </div>
+
 
         {!loading && blogPosts?.length > 0 && <div className="flex justify-center items-center gap-4 my-6">
           <Button

@@ -105,11 +105,11 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Phone className="w-6 h-6 text-primary mr-3" />
-                <span className="text-muted">+91 8800015162</span>
+                <span className="text-muted"><a href="tel:+918800015162">+91 8800015162</a></span>
               </li>
               <li className="flex items-center">
                 <Mail className="w-6 h-6 text-primary mr-3" />
-                <span className="text-muted">info@knotdelhi.com</span>
+                <span className="text-muted"><a href="mailto:info@knotdelhi.com">info@knotdelhi.com</a></span>
               </li>
             </ul>
           </div>

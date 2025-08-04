@@ -9,6 +9,10 @@ import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Youtube } from "luci
 import { motion } from "framer-motion"
 import Heading from "@/components/resuable_components/Heading"
 import Link from "next/link"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import { apiJson } from "@/lib/api/axiosBase"
+import { toast } from "react-toastify"
 
 const MotionDiv = motion.create('div')
 const SocialLinks = [
@@ -41,27 +45,45 @@ const SocialLinks = [
 ]
 
 export default function ContactSection() {
-    const [contactForm, setContactForm] = useState({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-    })
+    const headingData = {
+        title: "Contact Us",
+        para: "Have questions o    r need more information? Reach out to us and our team will get back to you."
+    }
+    const [loading, setLoading] = useState(false);
+    //============= Validation for contact form =============//
+    const validationSchema = Yup.object().shape({
+        fullName: Yup.string().required("Name is required"),
+        email: Yup.string().email("Invalid email").required("Email is required"),
+        subject: Yup.string().required("Subject is required"),
+        message: Yup.string().required("Message is required"),
+    });
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        alert("Thank you for your message! We will get back to you soon.")
-        setContactForm({
-            name: "",
+
+    const formik = useFormik({
+        initialValues: {
+            fullName: "",
             email: "",
             subject: "",
             message: "",
-        })
-    }
-    const headingData = {
-        title: "Contact Us",
-        para: "Have questions or need more information? Reach out to us and our team will get back to you."
-    }
+        },
+        validationSchema,
+        onSubmit: async (values, { resetForm }) => {
+            try {
+                setLoading(true);
+                const response = await apiJson.post("/api/Website/contactUs", values);
+                toast.success(response?.data?.message || "Message sent successfully!");
+
+                resetForm();
+            } catch (error) {
+                console.error("Error submitting form:", error);
+                toast.error("There was an error submitting your message. Please try again later.");
+            } finally {
+                setLoading(false);
+            }
+        },
+    });
+
+
     return (
         <section id="contact" className="py-20 bg-gradient-secondary">
             <div className="container mx-auto px-4 pt-16">
@@ -77,18 +99,23 @@ export default function ContactSection() {
                             className="bg-gradient-dark rounded-lg p-8 h-full"
                         >
                             <h3 className="text-2xl font-bold mb-6 text-white">Get In Touch</h3>
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <form onSubmit={formik.handleSubmit} className="space-y-6">
                                 <div>
                                     <Label htmlFor="contact-name" className="text-gray-300">
                                         Full Name
                                     </Label>
                                     <Input
                                         id="contact-name"
-                                        value={contactForm.name}
-                                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                                        type="text"
+                                        name="fullName"
+                                        value={formik.values.fullName}
+                                        onChange={formik.handleChange}
                                         placeholder="Your name"
                                         className="bg-gray-800/80 border-[#C5A572]/30 text-white"
                                     />
+                                    {formik.touched.fullName && formik.errors.fullName ? (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.fullName}</div>
+                                    ) : null}
                                 </div>
 
                                 <div>
@@ -97,12 +124,16 @@ export default function ContactSection() {
                                     </Label>
                                     <Input
                                         id="contact-email"
+                                        name="email"
                                         type="email"
-                                        value={contactForm.email}
-                                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                                        value={formik.values.email}
+                                        onChange={formik.handleChange}
                                         placeholder="Your email"
                                         className="bg-gray-800/80 border-[#C5A572]/30 text-white"
                                     />
+                                    {formik.touched.email && formik.errors.email ? (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
+                                    ) : null}
                                 </div>
 
                                 <div>
@@ -111,11 +142,16 @@ export default function ContactSection() {
                                     </Label>
                                     <Input
                                         id="contact-subject"
-                                        value={contactForm.subject}
-                                        onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
+                                        name="subject"
+                                        type="text"
+                                        value={formik.values.subject}
+                                        onChange={formik.handleChange}
                                         placeholder="Subject"
                                         className="bg-gray-800/80 border-[#C5A572]/30 text-white"
                                     />
+                                    {formik.touched.subject && formik.errors.subject ? (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.subject}</div>
+                                    ) : null}
                                 </div>
 
                                 <div>
@@ -124,16 +160,20 @@ export default function ContactSection() {
                                     </Label>
                                     <Textarea
                                         id="contact-message"
-                                        value={contactForm.message}
-                                        onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                                        name="message"
+                                        value={formik.values.message}
+                                        onChange={formik.handleChange}
                                         placeholder="Your message"
                                         className="bg-gray-800/80  text-white"
                                         rows={5}
                                     />
+                                    {formik.touched.message && formik.errors.message ? (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.message}</div>
+                                    ) : null}
                                 </div>
 
-                                <Button type="submit" className="bg-[#C5A572] text-black hover:bg-[#C5A572]/80 px-6 py-3">
-                                    Send Message
+                                <Button type="submit" disabled={loading} className="bg-[#C5A572] text-black hover:bg-[#C5A572]/80 px-6 py-3">
+                                    {loading ? "Sending..." : "Send Message"}
                                 </Button>
                             </form>
                         </MotionDiv>
@@ -187,7 +227,7 @@ export default function ContactSection() {
                                             >
                                                 {link.icon}
                                             </Link>))}
-                                    
+
                                     </div>
                                 </div>
                             </div>
