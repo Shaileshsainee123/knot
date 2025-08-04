@@ -118,8 +118,8 @@ export default function BookingSection() {
   })
 
   return (
-    <section id="booking" className="pt-14 bg-black ">
-      <div className="container mx-auto px-4">
+    <section className="pt-14 bg-black ">
+      <div id="booking" className="container mx-auto px-4">
         <Heading data={HeadingData} />
 
         {/* Tab list */}
