@@ -9,7 +9,7 @@ const Heading = ({data}) => {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          viewport={{ once: true }} className="text-center mb-16">
+          viewport={{ once: true }} className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-heading bg-clip-text text-transparent">
            {data.title}
           </h2>
