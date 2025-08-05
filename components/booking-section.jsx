@@ -124,7 +124,7 @@ export default function BookingSection() {
 
         {/* Tab list */}
 
-        <div className="flex gap-1 md:gap-3 items-center justify-evenly border border-primary max-w-sm mx-auto p-1 rounded-md mb-10 relative bg-transparent">
+        <div className="flex gap-1 md:gap-3 items-center justify-evenly border border-primary max-w-[365px] mx-auto p-1 rounded-md mb-10 relative bg-transparent">
           {["guestList", "table"].map((tab) => (
             <div
               key={tab}
@@ -223,8 +223,6 @@ export default function BookingSection() {
                   id="no_of_Guests"
                   name="no_of_Guests"
                   type="number"
-                  min="1"
-                  max="10"
                   value={formik.values?.no_of_Guests}
                   onChange={formik.handleChange}
                   placeholder="Number of guests"
@@ -366,8 +364,6 @@ export default function BookingSection() {
                   id="no_of_Guests"
                   type="number"
                   name="no_of_Guests"
-                  min="1"
-                  max="20"
                   value={tableFormik.values.no_of_Guests}
                   onChange={tableFormik.handleChange}
                   placeholder="Number of guests"
