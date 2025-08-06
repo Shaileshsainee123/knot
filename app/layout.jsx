@@ -5,6 +5,7 @@ import { Montserrat } from 'next/font/google'
 import Footer from '@/components/footer';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastContainer } from 'react-toastify';
+import ScrollToTop from '@/components/resuable_components/ScrollToTop';
 
 export const metadata = {
  title: {
@@ -43,6 +44,7 @@ export default function RootLayout({ children }) {
           {children}
           <Footer />
           <ToastContainer />
+          <ScrollToTop />
         </AuthProvider>
       </body>
     </html>

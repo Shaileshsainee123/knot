@@ -47,7 +47,7 @@ const eventCard = ({ event }) => {
 
                 <Button
                     onClick={() => handleScroll("booking")}
-                    className={"w-full bg-transparent border border-primary text-primary hover:bg-[#C5A572] hover:text-black transition-all duration-500"}
+                    className={"w-full bg-transparent border border-primary text-primary font-semibold hover:text-black hover:bg-[#C5A572] transition-all duration-500"}
                 >
                     Book Now
                 </Button>

@@ -247,7 +247,7 @@ export default function BookingSection() {
 
               </div>
 
-              <Button disabled={!formik.values.terms || loading} type="submit" className="w-full bg-primary font-bold text-black hover:bg-[#C5A572]/80 py-3">
+              <Button disabled={!formik.values.terms || loading} type="submit" className="w-full font-bold py-3">
                 Add Guest List
               </Button>
             </form>
@@ -424,7 +424,7 @@ export default function BookingSection() {
                 </Label>
               </div>
 
-              <Button disabled={!tableFormik.values.terms} type="submit" className="w-full bg-primary text-black hover:bg-[#C5A572]/80 py-3 font-semibold">
+              <Button disabled={!tableFormik.values.terms} type="submit" className="w-full font-bold py-3">
                 Reserve Table
               </Button>
             </form>

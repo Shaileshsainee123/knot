@@ -77,7 +77,7 @@ export default function AboutSection() {
               ))}
             </div>)}
             <Link href="/contact">
-              <Button className="bg-primary font-semibold text-black hover:bg-[#C5A572]/80 px-6 py-3 w-full transition-all duration-300 ease-in-out !rounded-button">
+              <Button className="px-6 py-3 font-semibold w-full !rounded-button">
                 Contact Us
               </Button>
             </Link>

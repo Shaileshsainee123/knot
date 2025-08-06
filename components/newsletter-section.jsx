@@ -74,7 +74,7 @@ export default function NewsletterSection() {
               placeholder="Enter your whatsapp number"
               className="flex-grow  border-[#C5A572]/30 text-white"
             />
-            <Button type="submit" className="bg-primary font-bold text-black hover:bg-[#C5A572]/80 px-6 py-3 ">
+            <Button type="submit" className="bg-primary font-bold text-black hover:bg-[#C5A572]/90 px-6 py-3 ">
               <PiWhatsappLogoBold className="font-bold" /> Join on WhatsApp
             </Button>
           </form>

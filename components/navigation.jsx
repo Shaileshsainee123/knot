@@ -74,7 +74,7 @@ export default function Navigation() {
               >
                 Guest List
               </Button>
-              <Button className="bg-[#C5A572] text-black hover:bg-[#C5A572]/80" onClick={() => handleScroll("booking")} >Book Table</Button>
+              <Button className="font-semibold" onClick={() => handleScroll("booking")} >Book Table</Button>
               {/* <CircleUserRound className="text-primary cursor-pointer hover:scale-110 transition duration-300" size={40} onClick={() => setOpenLogin(true)} /> */}
 
             </div>

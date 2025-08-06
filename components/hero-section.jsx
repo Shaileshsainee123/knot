@@ -65,7 +65,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className="bg-primary text-black hover:bg-[#C5A572]/80 px-8 py-3 text-lg font-semibold">
+              className="text-black px-8 py-3 text-lg font-semibold">
               Book Now
             </MotionButton>
             </Link>
