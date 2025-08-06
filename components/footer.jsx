@@ -8,8 +8,8 @@ const quickLinks = [
   { name: "Gallery", href: "/gallery" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
-  { name: "Terms & Conditions", href: "/" },
-  { name: "Privacy Policy", href: "/" },
+  { name: "Terms & Conditions", href: "/help/terms" },
+  { name: "Privacy Policy", href: "/help/privacy" },
 ]
 const SocialLinks = [
   {
